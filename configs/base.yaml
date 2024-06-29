@@ -1,0 +1,121 @@
+data_cfg: # 数据相关配置文件
+  data_dir: ./data
+  dataset_cfg:
+    class_train_samples: # 用于训练的样本数量, key为类别id, value为训练样本数量
+      0: 5
+      12: 5
+      13: 5
+    seq_len: 65 # 用多少个时间步长的数据
+    channels: [0, 2, 6, 8, 11, 12] # 用哪几个传感器的数据
+    #channels: [1, 3, 6, 7, 11]
+    UBC: [UBC_0]
+    VOC: [VOC_1, VOC_4, VOC_7, VOC_10, VOC_11]
+    Water: [Water_12]
+    Healthy: [Healthy_13]
+    Mixed: [Mixed_14, Mixed_15, Mixed_16, Mixed_17, Mixed_18, Mixed_19, Mixed_20, Mixed_21, Mixed_22]
+    All: [UBC, Healthy, Water, VOC] # 数据
+    # 以下为数据增强的配置
+    use_tsgm: True # 是否使用tsgm库进行手动数据增强
+    tsgm_save_dir: ./tsgm/generated_data # tsgm库生成的数据保存路径
+    # 使用tsgm库进行手动数据增强的配置
+    tsgm_cfg:
+    - type: GaussianNoise
+      class_id_list: [0, 12, 13]
+      gen_num_list: [20, 20, 20]
+      gen_params: # 生成高斯噪声的参数
+        mean: 0
+        variance: 0.3
+    - type: SliceAndShuffle
+      class_id_list: [0, 12, 13]
+      gen_num_list: [20, 20, 20]
+      gen_params: # 生成切片和打乱的参数
+        n_segments: 10
+    - type: Shuffle
+      class_id_list: [0, 12, 13]
+      gen_num_list: [20, 20, 20]
+      gen_params: # 生成打乱的参数
+    - type: MagnitudeWarping
+      class_id_list: [0, 12, 13]
+      gen_num_list: [20, 20, 20]
+      gen_params: # 生成幅度扭曲的参数
+        sigma: 0.2
+        n_knots: 4
+    - type: WindowWarping
+      class_id_list: [0, 12, 13]
+      gen_num_list: [20, 20, 20]
+      gen_params: # 生成窗口扭曲的参数
+        window_ratio: 0.2
+        scales: [0.25, 1.0]
+  seed: 0 # 随机种子
+  scale: True # 是否进行数据归一化
+
+dataloader_cfg:
+  batch_size: 128
+  num_workers: 4 # 一般设置为cpu核数
+  pin_memory: True
+
+model_cfg:
+  type: TCFusion
+  cnn_config:
+    type: ResNet
+    in_ch: 6 # 传感器通道数
+    blocks: [3, 4, 6, 3] # resnet34的blocks resnet18的blocks为[2, 2, 2, 2]
+    feat_dim: 512 # 固定
+    num_classes: 8 # 分类数 等于len(UBC+VOC+Water)
+    norm_linear: False
+  transformer_config:
+    type: MyTransformer
+    in_ch: 6
+    num_layers: 4
+    d_model: 512 # 可以设置为64 128 或 256 512
+    nhead: 8
+    dim_ffn: 512 # 一般为d_model的4倍 也可以设置为d_model的2倍或者相同的大小
+    dropout: 0.1 # 值越大结果的随机性越大
+    feat_dim: 512 # 和d_model一样
+    num_classes: 8
+    norm_linear: False
+  fusion: Hybrid # Cat, Add, Hybrid
+  feat_dim: 512 # 可以是任意的 
+  num_classes: 8
+  norm_linear: False
+  aux_loss: True # 是否使用辅助分类损失
+  model_name: TCFusion_focal_center_da
+
+
+loss_cfg: # 定义一个分类损失+一个特征损失
+  - type: SoftmaxFocalLoss
+    loss_term_weight: 1.0
+    gamma: 2.0
+    alpha: 0.25
+
+  - type: CenterLoss
+    loss_term_weight: 0.1
+    num_classes: 8
+    feat_dim: 512 # 不同的模型需要更改
+    
+optimizer_cfg:
+  type: SGD
+  lr: 0.001 # 5.0e-4, 7.0e-4, 1.0e-4
+  momentum: 0.9
+  weight_decay: 0.0005 # 0.05, 0.1, 0.01, 0.001
+  # type: Adam
+  # lr: 0.001
+  # weight_decay: 0.0005
+  # betas: [0.9, 0.999]
+
+scheduler_cfg: # 学习率衰减策略
+  type: MultiStepLR
+  gamma: 0.9
+  milestones: # Learning Rate Reduction at each milestones
+    - 100
+    - 200
+    - 250
+
+trainer_cfg:
+  type: BaseTrainer
+  save_dir: ./outputs
+  epochs: 300
+  test_metric_threshold: 0.5
+  early_stop: 30
+  restore_hint: 0 # 0表示加载最佳模型
+  target_class_idx: 0 # 目标类别id, 也就是UBC类别id
