@@ -1,11 +1,11 @@
-### Offical Implementation of paper "TC-Sniffer: Fusing Transformers and CNNs for few-shot urinary bladder cancer diagnosis with class imbalance based on electronic noses"
+## Offical Implementation of paper "TC-Sniffer: Fusing Transformers and CNNs for few-shot urinary bladder cancer diagnosis with class imbalance based on electronic noses"
 
-#### Abstract
+### Abstract
 Analyzing data from electronic noses (e-noses) using deep learning algorithms presents a promising non-invasive approach for the early detection of urinary bladder cancer (UBC), which is one of the most prevalent cancers of the urinary tract globally. However, the limited availability of clinical samples in real-world environments often impedes the performance of existing deep learning algorithms. The scarcity of clinical samples for certain classes, such as UBC and healthy individuals, presents two primary challenges: few-shot classification and class-imbalanced distribution. To address these issues, we propose a novel bi-branch framework for UBC diagnosis. Initially, intensity-based transformation techniques are employed to generate diverse samples for few-shot classes, thereby addressing the sample size issue and alleviating class imbalance during model training. Our bi-branch architecture, TC-Sniffer, integrates Transformers with temporal convolutional neural networks (CNNs) to capture long-range and short-range dependencies, facilitating robust representation learning. Furthermore, TC-Sniffer incorporates a feature-level constraint to learn distinct class-specific features, and employs a weighted classification loss to mitigate the effects of class imbalance. Additionally, we propose an efficient sensor selection algorithm that optimizes e-nose deployment by focusing on the most informative sensors, with a complexity of only $O(n)$. Experimental results on a self-collected dataset demonstrate that our proposed method significantly outperforms existing approaches, achieving a mean accuracy of 92.50\% in a 5-shot scenario.
 
 ![framework](images/framework.png)
 
-#### Results
+### Results
 
 |      Method       |       Accuracy        |       Precision       |        Recall         |       F1-Score        |        Average        |
 | :---------------: | :-------------------: | :-------------------: | :-------------------: | :-------------------: | :-------------------: |
@@ -21,11 +21,11 @@ Analyzing data from electronic noses (e-noses) using deep learning algorithms pr
 | TC-Sniffer (ours) | $\textbf{0.9250}\pm\textbf{0.0031}$ | $\textbf{0.9192}\pm\textbf{0.0060}$ | $\textbf{0.9076}\pm\textbf{0.0021}$ | $\textbf{0.9123}\pm\textbf{0.0032}$ | $\textbf{0.9160}\pm\textbf{0.0030}$ |
 
 
-#### Data preparation
+### Data preparation
 Please contact corresponding authors: Weiwei Wu(wwwu@xidian.edu.cn) and Taoping Liu (liutaoping@xidian.edu.cn).
 
 
-#### How to run?
+### How to run?
 For deep learning models: 
 
 training:
@@ -56,16 +56,16 @@ Gaussian mixture model (GMM)
 python machine_learning/gmm.py
 ```
 
-#### Configs
+### Configs
 For `configs/base.yaml`, three sub configurations need to be changed, *i.e.*, data_cfg, model_cfg, and loss_cfg. 
 
 You can read the source file and change them correspondingly.
 
-#### Acknowledgement
+### Acknowledgement
 We would thank [TSGM](https://github.com/AlexanderVNikitin/tsgm) for the effective data augmentations, [OpenGait](https://github.com/ShiqiYu/OpenGait) for the good Pytorch Template, and [liyiersan](https://github.com/liyiersan) for code implementation.
 
 
-#### Citation
+### Citation
 If you find this repo useful or requst our data, please cite our papers:
 ```txt
 @article{jian2022artificially,
