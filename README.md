@@ -80,7 +80,16 @@ If you find this repo useful or requst our data, please cite our papers:
 }
 
 
-
+@article{jian2024tc,
+  title={TC-Sniffer: A Transformer-CNN Bibranch Framework Leveraging Auxiliary VOCs for Few-Shot UBC Diagnosis via Electronic Noses},
+  author={Jian, Yingying and Zhang, Nan and Bi, Yunzhe and Liu, Xiyang and Fan, Jinhai and Wu, Weiwei and Liu, Taoping},
+  journal={ACS sensors},
+  volume={10},
+  number={1},
+  pages={213--224},
+  year={2024},
+  publisher={ACS Publications}
+}
 ```
 
 
